@@ -1,15 +1,180 @@
-//your variable declarations here
+SpaceShip a = new SpaceShip();
+Star[] s = new Star[150];
+Asteroid[] chunk = new Asteroid[5];
+boolean isPressedw = false;
+boolean isPressedq = false;
+boolean isPressede = false;
 public void setup() 
 {
-  //your code here
+  size(1000,750);
+  background(0);
+  for(int i = 0; i < s.length; i++)
+  {
+    s[i] = new Star((int)(Math.random()*1001),(int)(Math.random()*751));
+  }
+  for(int i = 0; i < chunk.length; i++)
+  {
+    int side = (int)(Math.random()*4);
+    chunk[i] = new Asteroid();
+    if(side == 0) //top
+    {
+      chunk[i].setX((int)(Math.random()*999)+1);
+      chunk[i].setY(-100);
+      chunk[i].setDirectionX(Math.random()*7-3);
+      chunk[i].setDirectionY(Math.random()*4);
+    }
+    if(side == 1) //left
+    {
+      chunk[i].setX(-100);
+      chunk[i].setY((int)(Math.random()*749)+1);
+      chunk[i].setDirectionX(Math.random()*4);
+      chunk[i].setDirectionY(Math.random()*7-3);
+    }
+    if(side == 2) //bottom
+    {
+      chunk[i].setX((int)(Math.random()*999)+1);
+      chunk[i].setY(850);
+      chunk[i].setDirectionX(Math.random()*7-3);
+      chunk[i].setDirectionY(Math.random()*-4);
+    }
+    if(side == 3) //right
+    {
+      chunk[i].setX(1100);
+      chunk[i].setY((int)(Math.random()*749)+1);
+      chunk[i].setDirectionX(Math.random()*-4);
+      chunk[i].setDirectionY(Math.random()*7-3);
+    }
+  }
 }
 public void draw() 
 {
-  //your code here
+  background(0);
+  for(int i = 0; i < s.length; i++)
+  {
+    s[i].show();
+  }
+  for(int i = 0; i < chunk.length; i++)
+  {
+    chunk[i].show();
+    chunk[i].move();
+  }
+  a.show();
+  a.move();
+  if(keyPressed == true && key == 's')
+  {
+    a.setDirectionX(0);
+    a.setDirectionY(0);
+    a.setX((int)(Math.random()*999)+1);
+    a.setY((int)(Math.random()*999)+1);
+    a.setPointDirection((int)(Math.random()*361));
+  }
+  if(isPressedw == true)
+  {
+    a.accelerate(0.05);
+  }
+  if(isPressedq == true)
+  {
+    a.rotate(-5);
+  }
+  if(isPressede == true)
+  {
+    a.rotate(5);
+  }
 }
-class SpaceShip //extends Floater  
+class SpaceShip extends Floater  
 {   
-    //your code here
+    public SpaceShip()
+    {
+      corners = 4;
+      xCorners = new int[4];
+      xCorners[0] = (int)myDirectionX + 15;
+      xCorners[1] = (int)myDirectionX - 15;
+      xCorners[2] = (int)myDirectionX - 10;
+      xCorners[3] = (int)myDirectionX - 15;
+      yCorners = new int[4];
+      yCorners[0] = (int)myDirectionY;
+      yCorners[1] = (int)myDirectionY - 10;
+      yCorners[2] = (int)myDirectionY;
+      yCorners[3] = (int)myDirectionY + 10;
+      myCenterX = 250;
+      myCenterY = 250;
+      myColor = color(255);
+      myDirectionX = 0;
+      myDirectionY = 0;
+      myPointDirection = 270;
+    }
+    public void setX(int x) {myCenterX = x;}
+    public int getX() {return (int)(myCenterX);}
+    public void setY(int y) {myCenterY = y;}
+    public int getY() {return (int)(myCenterY);}
+    public void setDirectionX(double x) {myDirectionX = x;}
+    public double getDirectionX() {return myDirectionX;}
+    public void setDirectionY(double y) {myDirectionY = y;}
+    public double getDirectionY() {return myDirectionY;}
+    public void setPointDirection(int degrees) {myPointDirection = degrees;}
+    public double getPointDirection() {return myPointDirection;}
+}
+class Star
+{
+  int myX, myY;
+  public Star(int x, int y)
+  {
+    myX = x;
+    myY = y;
+  }
+  public void show()
+  {
+    fill(255);
+    ellipse(myX,myY,5,5);
+  }
+}
+class Asteroid extends Floater
+{
+  private int rSpeed;
+  Asteroid()
+  {
+    corners = 6;
+    xCorners = new int[6];
+    xCorners[0] = (int)myCenterX - 25;
+    xCorners[1] = (int)myCenterX - 50;
+    xCorners[2] = (int)myCenterX - 25;
+    xCorners[3] = (int)myCenterX + 25;
+    xCorners[4] = (int)myCenterX + 50;
+    xCorners[5] = (int)myCenterX + 25;
+    yCorners = new int[6];
+    yCorners[0] = (int)myCenterY - (int)(50*Math.sin(Math.PI/3));
+    yCorners[1] = (int)myCenterY;
+    yCorners[2] = (int)myCenterY + (int)(50*Math.sin(Math.PI/3));
+    yCorners[3] = (int)myCenterY + (int)(50*Math.sin(Math.PI/3));
+    yCorners[4] = (int)myCenterY;
+    yCorners[5] = (int)myCenterY - (int)(50*Math.sin(Math.PI/3));
+    myCenterX = 0;
+    myCenterY = 0;
+    myColor = color(102,51,0);
+    myDirectionX = 0;
+    myDirectionY = 0;
+    myPointDirection = 0;
+    rSpeed = (int)(Math.random()*7-3);
+  }
+  public void setX(int x) {myCenterX = x;}
+  public int getX() {return (int)(myCenterX);}
+  public void setY(int y) {myCenterY = y;}
+  public int getY() {return (int)(myCenterY);}
+  public void setDirectionX(double x) {myDirectionX = x;}
+  public double getDirectionX() {return myDirectionX;}
+  public void setDirectionY(double y) {myDirectionY = y;}
+  public double getDirectionY() {return myDirectionY;}
+  public void setPointDirection(int degrees) {myPointDirection = degrees;}
+  public double getPointDirection() {return myPointDirection;}
+  public void move()
+  {
+    rotate(rSpeed);
+    super.move();
+  }
+  public void show()
+  {
+    super.show();
+  }
 }
 abstract class Floater //Do NOT modify the Floater class! Make changes in the SpaceShip class 
 {   
@@ -86,5 +251,34 @@ abstract class Floater //Do NOT modify the Floater class! Make changes in the Sp
     }   
     endShape(CLOSE);  
   }   
-} 
-
+}
+public void keyPressed()
+{
+ if(key == 'w')
+ {
+    isPressedw = true;
+ }
+ else if(key == 'q')
+ {
+    isPressedq = true;
+ }
+ else if(key == 'e')
+ {
+    isPressede = true;
+ }
+}
+public void keyReleased()
+{
+  if(key == 'w')
+  {
+    isPressedw = false;
+  }
+  else if(key == 'q')
+  {
+    isPressedq = false;
+  }
+  else if(key == 'e')
+  {
+    isPressede = false;
+  }
+}
