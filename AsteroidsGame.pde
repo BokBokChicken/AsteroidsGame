@@ -1,4 +1,5 @@
 SpaceShip a = new SpaceShip();
+Bullet b = new Bullet(a);
 Star[] s = new Star[150];
 ArrayList <Asteroid> chunk = new ArrayList <Asteroid> ();
 boolean isPressedw = false;
@@ -37,10 +38,11 @@ public void draw()
     {
       chunk.get(i).move();
     }
-    
   }
   a.show();
   a.move();
+  b.show();
+  b.move();
   if(isPressedw == true)
   {
     a.accelerate(0.05);
@@ -171,6 +173,33 @@ class Asteroid extends Floater
   public void show()
   {
     super.show();
+  }
+}
+class Bullet extends Floater
+{
+  Bullet(SpaceShip theShip)
+  {
+    myCenterX = a.getX();
+    myCenterY = a.getY();
+    myPointDirection = a.getPointDirection();
+    double dRadians = myPointDirection*Math.PI/180;
+    myDirectionX = 5*Math.cos(dRadians) + a.getDirectionX();
+    myDirectionY = 5*Math.sin(dRadians) + a.getDirectionY();
+  }
+  public void setX(int x) {myCenterX = x;}
+  public int getX() {return (int)(myCenterX);}
+  public void setY(int y) {myCenterY = y;}
+  public int getY() {return (int)(myCenterY);}
+  public void setDirectionX(double x) {myDirectionX = x;}
+  public double getDirectionX() {return myDirectionX;}
+  public void setDirectionY(double y) {myDirectionY = y;}
+  public double getDirectionY() {return myDirectionY;}
+  public void setPointDirection(int degrees) {myPointDirection = degrees;}
+  public double getPointDirection() {return myPointDirection;}
+  public void show()
+  {
+    fill(0,255,0);
+    ellipse(a.getX(),a.getY(),5,5);
   }
 }
 abstract class Floater //Do NOT modify the Floater class! Make changes in the SpaceShip class 
