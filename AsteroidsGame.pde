@@ -1,6 +1,6 @@
 SpaceShip a = new SpaceShip();
 Star[] s = new Star[150];
-Asteroid[] chunk = new Asteroid[5];
+ArrayList <Asteroid> chunk = new ArrayList <Asteroid> ();
 boolean isPressedw = false;
 boolean isPressedq = false;
 boolean isPressede = false;
@@ -12,38 +12,10 @@ public void setup()
   {
     s[i] = new Star((int)(Math.random()*1001),(int)(Math.random()*751));
   }
-  for(int i = 0; i < chunk.length; i++)
+  for(int i = 0; i < 6; i++)
   {
     int side = (int)(Math.random()*4);
-    chunk[i] = new Asteroid();
-    if(side == 0) //top
-    {
-      chunk[i].setX((int)(Math.random()*999)+1);
-      chunk[i].setY(-100);
-      chunk[i].setDirectionX(Math.random()*7-3);
-      chunk[i].setDirectionY(Math.random()*4);
-    }
-    if(side == 1) //left
-    {
-      chunk[i].setX(-100);
-      chunk[i].setY((int)(Math.random()*749)+1);
-      chunk[i].setDirectionX(Math.random()*4);
-      chunk[i].setDirectionY(Math.random()*7-3);
-    }
-    if(side == 2) //bottom
-    {
-      chunk[i].setX((int)(Math.random()*999)+1);
-      chunk[i].setY(850);
-      chunk[i].setDirectionX(Math.random()*7-3);
-      chunk[i].setDirectionY(Math.random()*-4);
-    }
-    if(side == 3) //right
-    {
-      chunk[i].setX(1100);
-      chunk[i].setY((int)(Math.random()*749)+1);
-      chunk[i].setDirectionX(Math.random()*-4);
-      chunk[i].setDirectionY(Math.random()*7-3);
-    }
+    chunk.add(new Asteroid(side));
   }
 }
 public void draw() 
@@ -53,21 +25,22 @@ public void draw()
   {
     s[i].show();
   }
-  for(int i = 0; i < chunk.length; i++)
+  for(int i = 0; i < chunk.size(); i++)
   {
-    chunk[i].show();
-    chunk[i].move();
+    chunk.get(i).show();
+    int d = (int)dist(chunk.get(i).getX(),chunk.get(i).getY(), a.getX(), a.getY());
+    if(d < 70)
+    {
+      chunk.remove(i);
+    }
+    else
+    {
+      chunk.get(i).move();
+    }
+    
   }
   a.show();
   a.move();
-  if(keyPressed == true && key == 's')
-  {
-    a.setDirectionX(0);
-    a.setDirectionY(0);
-    a.setX((int)(Math.random()*999)+1);
-    a.setY((int)(Math.random()*999)+1);
-    a.setPointDirection((int)(Math.random()*361));
-  }
   if(isPressedw == true)
   {
     a.accelerate(0.05);
@@ -131,7 +104,7 @@ class Star
 class Asteroid extends Floater
 {
   private int rSpeed;
-  Asteroid()
+  Asteroid(int side)
   {
     corners = 6;
     xCorners = new int[6];
@@ -148,11 +121,35 @@ class Asteroid extends Floater
     yCorners[3] = (int)myCenterY + (int)(50*Math.sin(Math.PI/3));
     yCorners[4] = (int)myCenterY;
     yCorners[5] = (int)myCenterY - (int)(50*Math.sin(Math.PI/3));
-    myCenterX = 0;
-    myCenterY = 0;
+    if(side == 0) //top
+    {
+      myCenterX = ((int)(Math.random()*999)+1);
+      myCenterY = -100;
+      myDirectionX = (Math.random()*7-3);
+      myDirectionY = (Math.random()*4);
+    }
+    if(side == 1) //left
+    {
+      myCenterX = -100;
+      myCenterY = ((int)(Math.random()*749)+1);
+      myDirectionX = (Math.random()*4);
+      myDirectionY = (Math.random()*7-3);
+    }
+    if(side == 2) //bottom
+    {
+      myCenterX = ((int)(Math.random()*999)+1);
+      myCenterY = 850;
+      myDirectionX = (Math.random()*7-3);
+      myDirectionY = (Math.random()*-4);
+    }
+    if(side == 3) //right
+    {
+      myCenterX = 1100;
+      myCenterY = ((int)(Math.random()*749)+1);
+      myDirectionX = (Math.random()*-4);
+      myDirectionY = (Math.random()*7-3);
+    }
     myColor = color(102,51,0);
-    myDirectionX = 0;
-    myDirectionY = 0;
     myPointDirection = 0;
     rSpeed = (int)(Math.random()*7-3);
   }
@@ -254,6 +251,14 @@ abstract class Floater //Do NOT modify the Floater class! Make changes in the Sp
 }
 public void keyPressed()
 {
+ if(keyPressed == true && key == 's')
+ {
+    a.setDirectionX(0);
+    a.setDirectionY(0);
+    a.setX((int)(Math.random()*999)+1);
+    a.setY((int)(Math.random()*999)+1);
+    a.setPointDirection((int)(Math.random()*361));
+  }
  if(key == 'w')
  {
     isPressedw = true;
