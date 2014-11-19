@@ -1,7 +1,7 @@
 SpaceShip a = new SpaceShip();
-Bullet b = new Bullet(a);
 Star[] s = new Star[150];
 ArrayList <Asteroid> chunk = new ArrayList <Asteroid> ();
+ArrayList <Bullet> b = new ArrayList <Bullet> ();
 boolean isPressedw = false;
 boolean isPressedq = false;
 boolean isPressede = false;
@@ -13,24 +13,19 @@ public void setup()
   {
     s[i] = new Star((int)(Math.random()*1001),(int)(Math.random()*751));
   }
-  for(int i = 0; i < 6; i++)
-  {
-    int side = (int)(Math.random()*4);
-    chunk.add(new Asteroid(side));
-  }
 }
 public void draw() 
 {
   background(0);
-  for(int i = 0; i < s.length; i++)
+  for(int i = 0; i < s.length; i++) //Stars
   {
     s[i].show();
   }
-  for(int i = 0; i < chunk.size(); i++)
+  for(int i = 0; i < chunk.size(); i++) //Asteroids
   {
     chunk.get(i).show();
-    int d = (int)dist(chunk.get(i).getX(),chunk.get(i).getY(), a.getX(), a.getY());
-    if(d < 70)
+    int dSA = (int)dist(chunk.get(i).getX(),chunk.get(i).getY(), a.getX(), a.getY()); 
+    if(dSA < 70)
     {
       chunk.remove(i);
     }
@@ -39,10 +34,39 @@ public void draw()
       chunk.get(i).move();
     }
   }
-  a.show();
+  for(int i = 0; i < chunk.size(); i++) //a
+  {
+    System.out.println(chunk.size());
+    System.out.println(b.size());
+    for(int nI = 0; nI < b.size(); nI++)
+    {
+      int dAB = (int)dist(chunk.get(i).getX(), chunk.get(i).getY(), b.get(nI).getX(), b.get(nI).getY());
+      if(dAB < 55)
+      {
+        b.remove(nI);
+        chunk.remove(i);
+      }
+    }
+  }
+  a.show(); //SpaceShip
   a.move();
-  b.show();
-  b.move();
+  for(int i = 0; i < b.size(); i++) //Bullet
+  {
+    if(b.get(i).getX() < 5 || b.get(i).getX() > 995)
+    {
+      b.remove(i);
+    }
+    else if(b.get(i).getY() < 5 || b.get(i).getY() > 745)
+    {
+      b.remove(i);
+    }
+    else
+    {
+      b.get(i).shoot();
+      b.get(i).show();
+      b.get(i).move();
+    }
+  }
   if(isPressedw == true)
   {
     a.accelerate(0.05);
@@ -182,9 +206,8 @@ class Bullet extends Floater
     myCenterX = a.getX();
     myCenterY = a.getY();
     myPointDirection = a.getPointDirection();
-    double dRadians = myPointDirection*Math.PI/180;
-    myDirectionX = 5*Math.cos(dRadians) + a.getDirectionX();
-    myDirectionY = 5*Math.sin(dRadians) + a.getDirectionY();
+    myDirectionX = a.getDirectionX();
+    myDirectionY = a.getDirectionY();
   }
   public void setX(int x) {myCenterX = x;}
   public int getX() {return (int)(myCenterX);}
@@ -199,7 +222,12 @@ class Bullet extends Floater
   public void show()
   {
     fill(0,255,0);
-    ellipse(a.getX(),a.getY(),5,5);
+    ellipse((int)myCenterX,(int)myCenterY,10,10);
+  }
+  public void shoot()
+  {
+    myDirectionX = 5*Math.cos(myPointDirection*Math.PI/180) + a.getDirectionX();
+    myDirectionY = 5*Math.sin(myPointDirection*Math.PI/180) + a.getDirectionY();
   }
 }
 abstract class Floater //Do NOT modify the Floater class! Make changes in the SpaceShip class 
@@ -280,26 +308,38 @@ abstract class Floater //Do NOT modify the Floater class! Make changes in the Sp
 }
 public void keyPressed()
 {
- if(keyPressed == true && key == 's')
- {
+  if(key == ' ')
+  {
+    b.add(new Bullet(a));
+  }
+  if(key == 'n')
+  {
+    for(int i = 0; i < 6; i++)
+    {
+      int side = (int)(Math.random()*4);
+      chunk.add(new Asteroid(side));
+    }
+  }
+  if(key == 's')
+  {
     a.setDirectionX(0);
     a.setDirectionY(0);
     a.setX((int)(Math.random()*999)+1);
     a.setY((int)(Math.random()*999)+1);
     a.setPointDirection((int)(Math.random()*361));
   }
- if(key == 'w')
- {
+  if(key == 'w')
+  {
     isPressedw = true;
- }
- else if(key == 'q')
- {
+  }
+  else if(key == 'q')
+  {
     isPressedq = true;
- }
- else if(key == 'e')
- {
+  }
+  else if(key == 'e')
+  {
     isPressede = true;
- }
+  }
 }
 public void keyReleased()
 {
