@@ -5,6 +5,8 @@ ArrayList <Bullet> b = new ArrayList <Bullet> ();
 boolean isPressedw = false;
 boolean isPressedq = false;
 boolean isPressede = false;
+boolean cDestroyed = false;
+boolean cMove = false;
 public void setup() 
 {
   size(1000,750);
@@ -21,35 +23,35 @@ public void draw()
   {
     s[i].show();
   }
-  for(int i = 0; i < chunk.size(); i++) //Asteroids
+  a.show(); //SpaceShip
+  a.move();
+  for(int i = 0; i < chunk.size(); i++) //Asteroids 
   {
     chunk.get(i).show();
     int dSA = (int)dist(chunk.get(i).getX(),chunk.get(i).getY(), a.getX(), a.getY()); 
-    if(dSA < 70)
-    {
-      chunk.remove(i);
-    }
-    else
-    {
-      chunk.get(i).move();
-    }
-  }
-  for(int i = 0; i < chunk.size(); i++) //a
-  {
-    System.out.println(chunk.size());
-    System.out.println(b.size());
     for(int nI = 0; nI < b.size(); nI++)
     {
       int dAB = (int)dist(chunk.get(i).getX(), chunk.get(i).getY(), b.get(nI).getX(), b.get(nI).getY());
       if(dAB < 55)
       {
         b.remove(nI);
-        chunk.remove(i);
+        cDestroyed = true;
       }
     }
+    if(dSA < 65)
+    {
+      cDestroyed = true;
+    }
+    else
+    {
+      chunk.get(i).move();
+    }
+    if(cDestroyed == true)
+    {
+      chunk.remove(i);
+      cDestroyed = false;
+    }
   }
-  a.show(); //SpaceShip
-  a.move();
   for(int i = 0; i < b.size(); i++) //Bullet
   {
     if(b.get(i).getX() < 5 || b.get(i).getX() > 995)
@@ -95,8 +97,8 @@ class SpaceShip extends Floater
       yCorners[1] = (int)myDirectionY - 10;
       yCorners[2] = (int)myDirectionY;
       yCorners[3] = (int)myDirectionY + 10;
-      myCenterX = 250;
-      myCenterY = 250;
+      myCenterX = 500;
+      myCenterY = 375;
       myColor = color(255);
       myDirectionX = 0;
       myDirectionY = 0;
